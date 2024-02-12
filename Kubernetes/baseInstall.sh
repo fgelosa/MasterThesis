@@ -19,7 +19,7 @@ sudo groupadd docker
 sudo usermod -aG docker ${USER}
 su -s ${USER}
 
-sudo docker run hello-world
+docker run hello-world
 ################################
 ### Installing minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
