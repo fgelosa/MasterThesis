@@ -22,5 +22,5 @@ docker build . -t thesis/users-api
 cd ../..
 
 ##apply dei file di conf
-kubectl apply -f k8s_config_files/
+kubectl apply -f K8sConfigFiles/NaiveImplementation
 ```
