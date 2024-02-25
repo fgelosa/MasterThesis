@@ -15,6 +15,21 @@ spec:
       labels:
         io.kompose.service: frontend
     spec:
+      initContainers:
+        - name: proxy-init
+          image: openpolicyagent/proxy_init:v8
+          # Configure the iptables bootstrap script to redirect traffic to the
+          # Envoy proxy on port 8000, specify that Envoy will be running as user
+          # 1111, and that we want to exclude port 8282 from the proxy for the
+          # OPA health checks. These values must match up with the configuration
+          # defined below for the "envoy" and "opa" containers.
+          args: ["-p", "8000", "-u", "1111", "-w", "8282"]
+          securityContext:
+            capabilities:
+              add:
+              - NET_ADMIN
+            runAsNonRoot: false
+            runAsUser: 0
       containers:
         - env:
             - name: AUTH_API_ADDRESS
@@ -31,5 +46,51 @@ spec:
           ports:
             - containerPort: 8080
           resources: {}
+        - name: envoy
+          image: envoyproxy/envoy:v1.10.0
+          securityContext:
+            runAsUser: 1111
+          volumeMounts:
+          - readOnly: true
+            mountPath: /config
+            name: proxy-config
+          args:
+          - "envoy"
+          - "--config-path"
+          - "/config/envoy.yaml"
+        - name: opa
+          image: openpolicyagent/opa:0.22.0-istio
+          securityContext:
+            runAsUser: 1111
+          volumeMounts:
+          - readOnly: true
+            mountPath: /policy
+            name: opa-policy
+          args:
+          - "run"
+          - "--server"
+          - "--addr=localhost:8181"
+          - "--diagnostic-addr=0.0.0.0:8282"
+          livenessProbe:
+            httpGet:
+              path: /health?plugins
+              scheme: HTTP
+              port: 8282
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health?plugins
+              scheme: HTTP
+              port: 8282
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: proxy-config
+          configMap:
+            name: proxy-config
+        - name: opa-policy
+          secret:
+            secretName: opa-policy
       restartPolicy: Always
 status: {}
