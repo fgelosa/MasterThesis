@@ -12,4 +12,5 @@ spec:
   parameters:
     repos:
       - "docker.io/openzipkin/zipkin"
+      - "docker.io/kevbosk/frontend:latest"
       - "gcr.io/allowedproject/"
