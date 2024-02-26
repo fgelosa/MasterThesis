@@ -40,8 +40,8 @@ spec:
               value: http://todos-api:8082
             - name: ZIPKIN_URL
               value: http://zipkin:9411/api/v2/spans
-          image: thesis/frontend
-          imagePullPolicy: Never
+          image: docker.io/kevbosk/frontend:latest
+          imagePullPolicy: Always
           name: frontend
           ports:
             - containerPort: 8080
