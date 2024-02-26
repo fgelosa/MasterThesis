@@ -47,30 +47,32 @@ spec:
             - containerPort: 8080
           resources: {}
         - name: envoy
-          image: envoyproxy/envoy:v1.10.0
-          securityContext:
-            runAsUser: 1111
+          image: envoyproxy/envoy:v1.26.3
           volumeMounts:
-          - readOnly: true
-            mountPath: /config
-            name: proxy-config
+            - readOnly: true
+              mountPath: /config
+              name: proxy-config
           args:
-          - "envoy"
-          - "--config-path"
-          - "/config/envoy.yaml"
+            - "envoy"
+            - "--config-path"
+            - "/config/envoy.yaml"
+          env:
+            - name: ENVOY_UID
+              value: "1111"
         - name: opa
-          image: openpolicyagent/opa:0.22.0-istio
-          securityContext:
-            runAsUser: 1111
-          volumeMounts:
-          - readOnly: true
-            mountPath: /policy
-            name: opa-policy
+          image: openpolicyagent/opa:latest-envoy
           args:
-          - "run"
-          - "--server"
-          - "--addr=localhost:8181"
-          - "--diagnostic-addr=0.0.0.0:8282"
+            - "run"
+            - "--server"
+            - "--addr=localhost:8181"
+            - "--diagnostic-addr=0.0.0.0:8282"
+            - "--set=services.default.url=http://bundle-server"
+            - "--set=bundles.default.resource=bundle.tar.gz"
+            - "--set=plugins.envoy_ext_authz_grpc.addr=:9191"
+            - "--set=plugins.envoy_ext_authz_grpc.path=envoy/authz/allow"
+            - "--set=decision_logs.console=true"
+            - "--set=status.console=true"
+            - "--ignore=.*"
           livenessProbe:
             httpGet:
               path: /health?plugins
@@ -83,8 +85,8 @@ spec:
               path: /health?plugins
               scheme: HTTP
               port: 8282
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: 1
+            periodSeconds: 3
       volumes:
         - name: proxy-config
           configMap:

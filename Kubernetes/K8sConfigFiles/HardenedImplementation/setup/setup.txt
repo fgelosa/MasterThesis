@@ -1,0 +1,3 @@
+kubectl create configmap authz-policy --from-file policy.rego
+kubectl apply -f bundle-server.yaml
+kubectl create configmap proxy-config --from-file envoy.yaml
