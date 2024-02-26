@@ -11,6 +11,8 @@ spec:
       - "default"
   parameters:
     repos:
-      - "docker.io/openzipkin/zipkin"
+      - "openzipkin/zipkin"
+      - "redis"
       - "docker.io/kevbosk/frontend:latest"
       - "gcr.io/allowedproject/"
+      - "thesis/"
