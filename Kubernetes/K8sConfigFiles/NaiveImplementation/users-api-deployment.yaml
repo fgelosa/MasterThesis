@@ -34,6 +34,9 @@ spec:
           image: thesis/users-api
           name: users-api
           imagePullPolicy: Never
-          resources: {}
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
       restartPolicy: Always
 status: {}

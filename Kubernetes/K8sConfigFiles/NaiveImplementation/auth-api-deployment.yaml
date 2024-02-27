@@ -36,6 +36,9 @@ spec:
           image: thesis/auth-api
           imagePullPolicy: Never
           name: auth-api
-          resources: {}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "100Mi"
       restartPolicy: Always
 status: {}
