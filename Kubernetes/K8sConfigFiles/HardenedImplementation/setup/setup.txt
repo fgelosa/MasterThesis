@@ -1,3 +1,5 @@
+## openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+
 kubectl create configmap authz-policy --from-file policy.rego
 kubectl apply -f bundle-server.yaml
-kubectl create configmap proxy-config --from-file envoy.yaml
+kubectl create configmap proxy-config --from-file envoy.yaml --from-file tls.crt --from-file tls.key 
