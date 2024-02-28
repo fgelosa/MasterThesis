@@ -35,7 +35,7 @@ spec:
             - name: AUTH_API_ADDRESS
               value: http://auth-api:8081
             - name: PORT
-              value: "8080"
+              value: "443"
             - name: TODOS_API_ADDRESS
               value: http://todos-api:8082
             - name: ZIPKIN_URL
@@ -44,7 +44,7 @@ spec:
           imagePullPolicy: Always
           name: frontend
           ports:
-            - containerPort: 8080
+            - containerPort: 443
           resources: {}
         - name: envoy
           image: envoyproxy/envoy:v1.26.3
