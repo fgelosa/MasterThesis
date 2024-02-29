@@ -16,3 +16,4 @@ spec:
       - "docker.io/kevbosk/frontend:latest"
       - "gcr.io/allowedproject/"
       - "thesis/"
+      - "openpolicyagent/"
