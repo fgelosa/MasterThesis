@@ -30,18 +30,81 @@ spec:
               type: array
               items:
                 type: string
-            cpu:
-              description: "The maximum allowed cpu limit on a Pod, exclusive."
-              type: string
-            memory:
-              description: "The maximum allowed memory limit on a Pod, exclusive."
-              type: string
+            imageLimits:
+              description: >-
+                Specifies CPU and memory limits for containers based on their image.
+              type: array
+              items:
+                type: object
+                properties:
+                  imageName:
+                    type: string
+                  cpuLimit:
+                    type: string
+                  memoryLimit:
+                    type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
         package k8scontainerlimits
 
         import data.lib.exempt_container.is_exempt
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not is_exempt(container)
+          not container.resources
+          msg := sprintf("container <%v> has no resource limits", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not is_exempt(container)
+          not container.resources.limits
+          msg := sprintf("container <%v> has no resource limits", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not is_exempt(container)
+          missing(container.resources.limits, "cpu")
+          msg := sprintf("container <%v> has no cpu limit", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not is_exempt(container)
+          missing(container.resources.limits, "memory")
+          msg := sprintf("container <%v> has no memory limit", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          image_limit := input.parameters.imageLimits[_]
+          container.image == image_limit.imageName
+          cpu_exceeds_limit(container, image_limit.cpuLimit)
+          msg := sprintf("container '%v' with image '%v' exceeds CPU limit: has '%v', limit '%v'", [container.name, container.image, container.resources.limits.cpu, image_limit.cpuLimit])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          image_limit := input.parameters.imageLimits[_]
+          container.image == image_limit.imageName
+          memory_exceeds_limit(container, image_limit.memoryLimit)
+          msg := sprintf("container '%v' with image '%v' exceeds Memory limit: has '%v', limit '%v'", [container.name, container.image, container.resources.limits.memory, image_limit.memoryLimit])
+        }
+
+        cpu_exceeds_limit(container, limit) {
+          cpu := canonify_cpu(container.resources.limits.cpu)
+          max_cpu := canonify_cpu(limit)
+          cpu > max_cpu
+        }
+
+        memory_exceeds_limit(container, limit) {
+          mem := canonify_mem(container.resources.limits.memory)
+          max_mem := canonify_mem(limit)
+          mem > max_mem
+        }
 
         missing(obj, field) = true {
           not obj[field]
