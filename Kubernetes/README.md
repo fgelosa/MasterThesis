@@ -13,10 +13,12 @@ kubectl get po -A
 eval $(minikube -p minikube docker-env)
 cd microservice-app-example/auth-api
 docker build . -t thesis/auth-api
-//cd ../frontend
-//docker build . -t thesis/frontend
+cd ../frontend
+docker build . -t thesis/frontend
 cd ../todos-api
 docker build . -t thesis/todos-api
+cd ../log-message-processor
+docker build . -t thesis/log-message-processor
 cd ../users-api
 docker build . -t thesis/users-api
 cd ../..
