@@ -40,9 +40,6 @@ spec:
           image: thesis/todos-api
           name: todos-api
           imagePullPolicy: Never
-          resources:
-            limits:
-              cpu: "500m"
-              memory: "300Mi"
+          resources: {}
       restartPolicy: Always
 status: {}

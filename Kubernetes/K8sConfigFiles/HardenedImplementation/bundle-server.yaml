@@ -25,6 +25,10 @@ spec:
             - "/opt/policy/"
             - "--output"
             - "/opt/output/bundle.tar.gz"
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"  
           volumeMounts:
             - name: index
               mountPath: /opt/output/
@@ -39,6 +43,10 @@ spec:
           volumeMounts:
             - name: index
               mountPath: /usr/share/nginx/html
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"    
       volumes:
         - name: index
           emptyDir: {}

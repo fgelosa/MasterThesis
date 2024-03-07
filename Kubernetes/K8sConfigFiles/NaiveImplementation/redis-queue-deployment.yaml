@@ -26,9 +26,6 @@ spec:
       containers:
         - image: redis
           name: redis-queue
-          resources:
-            limits:
-              cpu: "200m"
-              memory: "100Mi"
+          resources: {}
       restartPolicy: Always
 status: {}

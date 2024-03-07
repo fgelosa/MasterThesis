@@ -17,3 +17,5 @@ spec:
       - "gcr.io/allowedproject/"
       - "thesis/"
       - "openpolicyagent/"
+      - "envoyproxy/"
+      - "nginx"

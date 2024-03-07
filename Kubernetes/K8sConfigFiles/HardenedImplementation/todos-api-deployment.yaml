@@ -24,6 +24,10 @@ spec:
           # OPA health checks. These values must match up with the configuration
           # defined below for the "envoy" and "opa" containers.
           args: ["-p", "8000", "-u", "1111", "-w", "8282"]
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
           securityContext:
             capabilities:
               add:
@@ -47,7 +51,10 @@ spec:
           image: thesis/todos-api
           name: todos-api
           imagePullPolicy: Never
-          resources: {}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "300Mi"
         - name: envoy
           image: envoyproxy/envoy:v1.26.3
           volumeMounts:
@@ -61,6 +68,10 @@ spec:
           env:
             - name: ENVOY_UID
               value: "1111"
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
         - name: opa
           image: openpolicyagent/opa:latest-envoy
           args:
@@ -89,6 +100,10 @@ spec:
               port: 8282
             initialDelaySeconds: 1
             periodSeconds: 3
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
       volumes:
         - name: proxy-config-todos-api
           configMap:
