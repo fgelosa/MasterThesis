@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: ../../kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: todos-api
+  name: todos-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: todos-api
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: ../../kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: todos-api
+    spec:
+      containers:
+        - env:
+            - name: JWT_SECRET
+              value: myfancysecret
+            - name: REDIS_CHANNEL
+              value: log_channel
+            - name: REDIS_HOST
+              value: redis-queue
+            - name: REDIS_PORT
+              value: "6379"
+            - name: TODO_API_PORT
+              value: "8082"
+            - name: ZIPKIN_URL
+              value: http://zipkin:9411/api/v2/spans
+          image: thesis/todos-api
+          name: todos-api
+          imagePullPolicy: Never
+          resources: {}
+      restartPolicy: Always
+status: {}

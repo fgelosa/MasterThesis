@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: frontend
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: frontend
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: frontend
+    spec:
+      initContainers:
+        - name: proxy-init
+          image: openpolicyagent/proxy_init:v8
+          # Configure the iptables bootstrap script to redirect traffic to the
+          # Envoy proxy on port 8000, specify that Envoy will be running as user
+          # 1111, and that we want to exclude port 8282 from the proxy for the
+          # OPA health checks. These values must match up with the configuration
+          # defined below for the "envoy" and "opa" containers.
+          args: ["-p", "8000", "-u", "1111", "-w", "8282"]
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
+          securityContext:
+            capabilities:
+              add:
+              - NET_ADMIN
+            runAsNonRoot: false
+            runAsUser: 0
+      containers:
+        - env:
+            - name: AUTH_API_ADDRESS
+              value: https://auth-api:8081
+            - name: PORT
+              value: "443"
+            - name: TODOS_API_ADDRESS
+              value: https://todos-api:8082
+            - name: ZIPKIN_URL
+              value: http://zipkin:9411/api/v2/spans
+          image: docker.io/kevbosk/frontend:latest
+          imagePullPolicy: Always
+          name: frontend
+          ports:
+            - containerPort: 443
+          resources:
+            limits:
+              cpu: "1500m"
+              memory: "300Mi"
+        - name: envoy
+          image: envoyproxy/envoy:v1.26.3
+          volumeMounts:
+            - readOnly: true
+              mountPath: /config
+              name: proxy-config-frontend
+          args:
+            - "envoy"
+            - "--config-path"
+            - "/config/envoy.yaml"
+          env:
+            - name: ENVOY_UID
+              value: "1111"
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
+        - name: opa
+          image: openpolicyagent/opa:latest-envoy
+          args:
+            - "run"
+            - "--server"
+            - "--addr=localhost:8181"
+            - "--diagnostic-addr=0.0.0.0:8282"
+            - "--set=services.default.url=http://bundle-server"
+            - "--set=bundles.default.resource=bundle.tar.gz"
+            - "--set=plugins.envoy_ext_authz_grpc.addr=:9191"
+            - "--set=plugins.envoy_ext_authz_grpc.path=envoy/authz/allow"
+            - "--set=decision_logs.console=true"
+            - "--set=status.console=true"
+            - "--ignore=.*"
+          livenessProbe:
+            httpGet:
+              path: /health?plugins
+              scheme: HTTP
+              port: 8282
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health?plugins
+              scheme: HTTP
+              port: 8282
+            initialDelaySeconds: 1
+            periodSeconds: 3
+          resources:
+            limits:
+              cpu: "3000m"
+              memory: "1000Mi"
+      volumes:
+        - name: proxy-config-frontend
+          configMap:
+            name: proxy-config-frontend
+        - name: opa-policy
+          secret:
+            secretName: opa-policy
+      restartPolicy: Always
+status: {}
