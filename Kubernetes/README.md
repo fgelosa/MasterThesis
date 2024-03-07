@@ -1,10 +1,29 @@
-# Installation (beta)
-run the install.sh script and after run these commands in the same directory where the script is
+# Installation (linux) (beta)
+In this section you will find all the tools and the scripts that you'll need in order to replicate our test setup.
 
-## apply dei file di conf
-Versioni diverse fanno cose diverse:
+The process it's divided into sections and you can select which kind of deployment you want to test.
 
-### Versione Base
+# First steps
+Clone this repository.
+```
+git clone https://github.com/fgelosa/MasterThesis.git
+```
+Navigate to this directory and start the needed basic installation.
+```
+cd MasterThesis/Kubernetes
+chmod +x install.sh
+./install.sh
+```
+
+
+# Choosing a specific test suite
+you can choose from different setup configurations.....
+- Base version
+- Gatekeeper version
+- Envoy version
+- Complete version
+
+### Base version
 ```
 setup.txt
 kubectl apply -f K8sConfigFiles/NaiveImplementation
@@ -27,13 +46,13 @@ kubectl apply -f gatekeeper-policies/contraints/
 # Deploy todo app with Gatekeeper implementation
 kubectl apply -f K8sConfigFiles/GatekeeperImplementation/
 ```
-### Versione Envoy
+### Envoy version
 ```
 setup.txt
 kubectl apply -f K8sConfigFiles/NaiveImplementation
 
 ```
-### Versione Hardened
+### Complete version
 ```
 setup.txt
 kubectl apply -f K8sConfigFiles/NaiveImplementation
