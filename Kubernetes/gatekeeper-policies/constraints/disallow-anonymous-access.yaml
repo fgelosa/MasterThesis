@@ -12,3 +12,5 @@ spec:
   parameters:
     allowedRoles: 
       - cluster-role-1
+      - kubeadm:bootstrap-signer-clusterinfo
+      - system:public-info-viewer

@@ -25,14 +25,14 @@ spec:
               value: http://todos-api:8082
             - name: ZIPKIN_URL
               value: http://zipkin:9411/api/v2/spans
-          image: gcr.io/allowedproject/
+          image: thesis/auth-api
           imagePullPolicy: Always
           name: frontend
           ports:
             - containerPort: 8080
           resources:
             limits:
-              cpu: "50m"
+              cpu: "500m"
               memory: "2Gi"
       restartPolicy: Always
 status: {}
