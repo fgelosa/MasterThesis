@@ -14,36 +14,37 @@ cd MasterThesis/Kubernetes
 chmod +x install.sh
 ./install.sh
 ```
-
-
-# Choosing a specific test suite
-you can choose from different setup configurations.....
-- Base version
-- Gatekeeper version
-- Envoy version
-- Complete version
+# Choose a specific test suite
+You can choose from different setup configurations:
+- [Base version](#base-version)
+- [Gatekeeper version](#gatekeeper-version)
+- [Envoy version](#envoy-version)
+- [Complete version](#complete-version)
 
 ### Base version
+Deploy todo app base version
 ```
-setup.txt
 kubectl apply -f K8sConfigFiles/NaiveImplementation
-
 ```
 ### Gatekeeper version
+Check to be a cluster administrator in current namespace
 ```
-# Check to be a cluster administrator in current namespace
 kubectl auth can-i create deployments --namespace=default
-
-# Deploy a Gatekeeper release into the cluster using prebuilt image
+```
+Deploy a Gatekeeper release into the cluster using prebuilt image
+```
 kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.15.0/deploy/gatekeeper.yaml
-
-# Apply template constraints
+```
+Apply template constraints
+```
 kubectl apply -f gatekeeper-policies/templates/
-
-# Apply constraints
-kubectl apply -f gatekeeper-policies/contraints/
-
-# Deploy todo app with Gatekeeper implementation
+```
+Apply constraints
+```
+kubectl apply -f gatekeeper-policies/constraints/
+```
+Deploy todo app with Gatekeeper implementation
+```
 kubectl apply -f K8sConfigFiles/GatekeeperImplementation/
 ```
 ### Envoy version
