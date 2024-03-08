@@ -47,6 +47,14 @@ Deploy todo app with Gatekeeper implementation
 ```
 kubectl apply -f K8sConfigFiles/GatekeeperImplementation/
 ```
+Add Gatekeeper Policy Manager (optional)
+```
+git clone https://github.com/sighupio/gatekeeper-policy-manager.git
+cd gatekeeper-policy-manager
+kubectl apply -k .
+# Activate port-forwarding and visit http://127.0.0.1:8080
+kubectl -n gatekeeper-system port-forward svc/gatekeeper-policy-manager 8080:80
+```
 ### Envoy version
 ```
 setup.txt
