@@ -38,7 +38,8 @@ cd ../users-api
 docker build . -t thesis/users-api
 cd ../..
 ```
-These commands allow you to build the images locally, making them available for deployment in your Minikube cluster. Remember to perform these steps each time you start a new shell session and intend to work with Minikube and Docker.
+These commands allow you to build the images locally, making them available for deployment in your Minikube cluster. Remember to perform the `eval $(minikube -p minikube docker-env)
+` step each time you start a new shell session and intend to work with Minikube and Docker.
 
 # Choose a specific test suite
 You can choose from different setup configurations:
