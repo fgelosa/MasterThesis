@@ -55,6 +55,11 @@ Deploy todo app base version
 ```
 kubectl apply -f K8sConfigFiles/BaseImplementation
 ```
+To open the frontend interface via web you can simply use this command which will open the default browser.
+```
+minikube service frontend
+```
+
 ---
 
 ### Gatekeeper version
@@ -86,17 +91,38 @@ kubectl apply -k .
 # Activate port-forwarding and visit http://127.0.0.1:8080
 kubectl -n gatekeeper-system port-forward svc/gatekeeper-policy-manager 8080:80
 ```
+
+To open the frontend interface via web you can simply use this command which will open the default browser.
+```
+minikube service frontend
+```
+
 ---
 
 ### Envoy version
-In order to utilize a complete Envoy setup you need to run a setup script with this command that creates all the ConfigMaps needed by the sidecars, giving them access to config files and ssl keys.
+If you want to utilize this version you don't actually need to build your ssl certificates because in the setup folders we have provided already all the necessary, but this guide is useful if you want to explore how we done that -> [SSL Creation GitHub](https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309). 
+
+First of all you need to check if you have cluster administrator permissions in current namespace
 ```
-setup.sh
+kubectl auth can-i create deployments --namespace=default
 ```
 
-after that you can simply deploy all the yaml files for the deployments and the service using this command.
+Now you need to run a setup script with this command that creates all the ConfigMaps needed by the sidecars, giving them access to config files and pre-generated ssl keys.
+```
+chmod +x K8sConfigFiles/EnvoyImplementation/setup/setup.sh
+./K8sConfigFiles/EnvoyImplementation/setup/setup.sh
+```
+
+After that you can simply deploy all the yaml files for the deployments and the service using this command.
 ```
 kubectl apply -f K8sConfigFiles/NaiveImplementation
+```
+
+Now you should have all the containers up and running with all the constraints implemented.
+
+To open the frontend interface via web you can simply use this command which will open the default browser.
+```
+minikube service frontend
 ```
 ---
 
@@ -104,5 +130,9 @@ kubectl apply -f K8sConfigFiles/NaiveImplementation
 ```
 setup.txt
 kubectl apply -f K8sConfigFiles/NaiveImplementation
+```
 
+To open the frontend interface via web you can simply use this command which will open the default browser.
+```
+minikube service frontend
 ```
