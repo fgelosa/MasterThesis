@@ -109,13 +109,15 @@ kubectl auth can-i create deployments --namespace=default
 
 Now you need to run a setup script with this command that creates all the ConfigMaps needed by the sidecars, giving them access to config files and pre-generated ssl keys.
 ```
-chmod +x K8sConfigFiles/EnvoyImplementation/setup/setup.sh
-./K8sConfigFiles/EnvoyImplementation/setup/setup.sh
+cd K8sConfigFiles/EnvoyImplementation/setup/
+chmod +x setup.sh
+./setup.sh
 ```
 
 After that you can simply deploy all the yaml files for the deployments and the service using this command.
 ```
-kubectl apply -f K8sConfigFiles/NaiveImplementation
+cd ../../..
+kubectl apply -f K8sConfigFiles/EnvoyImplementation
 ```
 
 Now you should have all the containers up and running with all the constraints implemented.
