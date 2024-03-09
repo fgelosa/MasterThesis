@@ -33,19 +33,3 @@ sudo service docker restart
 
 minikube start
 kubectl get po -A
-
-### Local build of images
-eval $(minikube -p minikube docker-env)
-
-cd custom-containers/frontend
-docker build . -t thesis/frontend
-cd ../auth-api
-docker build . -t thesis/auth-api
-
-cd ../../microservice-app-example/todos-api
-docker build . -t thesis/todos-api
-cd ../log-message-processor
-docker build . -t thesis/log-message-processor
-cd ../users-api
-docker build . -t thesis/users-api
-cd ../..

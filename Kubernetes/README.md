@@ -16,15 +16,30 @@ chmod +x install.sh
 ./install.sh
 ```
 ### Manual setup
-after that you can proceed with those commands
+After that, you must proceed manually with the building process of the Docker images. This step requires using a specific environment that allows Docker to interact with the Minikube cluster. Due to limitations associated with the eval command, which temporarily configures the shell to use the Docker environment of Minikube, this process cannot be automated within the setup script. By executing the following commands manually, you ensure that the images are built correctly within the Docker context of Minikube.
+Run this command to configure your shell to use Minikube's Docker environment:
 ```
-sudo sudo sudo
+eval $(minikube -p minikube docker-env)
 ```
+Then, navigate to the directories of the custom containers and build the images with Docker:
 ```
-sudo sudo sudo
+cd custom-containers/frontend
+docker build . -t thesis/frontend
+cd ../auth-api
+docker build . -t thesis/auth-api
 ```
+Do the same for the other microservices:
+```
+cd ../../microservice-app-example/todos-api
+docker build . -t thesis/todos-api
+cd ../log-message-processor
+docker build . -t thesis/log-message-processor
+cd ../users-api
+docker build . -t thesis/users-api
+cd ../..
+```
+These commands allow you to build the images locally, making them available for deployment in your Minikube cluster. Remember to perform these steps each time you start a new shell session and intend to work with Minikube and Docker.
 
----
 # Choose a specific test suite
 You can choose from different setup configurations:
 - [Base version](#base-version)
@@ -37,7 +52,7 @@ it's worth saying that if you want to change version after installation you may 
 ### Base version
 Deploy todo app base version
 ```
-kubectl apply -f K8sConfigFiles/NaiveImplementation
+kubectl apply -f K8sConfigFiles/BaseImplementation
 ```
 ---
 
