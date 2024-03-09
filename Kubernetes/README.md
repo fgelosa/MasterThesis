@@ -107,7 +107,7 @@ First of all you need to check if you have cluster administrator permissions in 
 kubectl auth can-i create deployments --namespace=default
 ```
 
-Now you need to run a setup script with this command that creates all the ConfigMaps needed by the sidecars, giving them access to config files and pre-generated ssl keys.
+Now you need to run a setup script with this command that creates all the ConfigMaps needed by the sidecars, giving them access to config files and pre-generated ssl key-certificate pairs.
 ```
 cd K8sConfigFiles/EnvoyImplementation/setup/
 chmod +x setup.sh
