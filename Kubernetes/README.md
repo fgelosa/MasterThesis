@@ -123,9 +123,11 @@ kubectl apply -f K8sConfigFiles/EnvoyImplementation
 Now you should have all the containers up and running with all the constraints implemented.
 
 To open the frontend interface via web you can simply use this command which will open the default browser.
+Note that in this configurations the frontend only works via HTTPS, so you manually need to edit the address in the navigation bar in you browser in order to obtain an address like `https://<ipaddress>:<port>`
 ```
 minikube service frontend
 ```
+
 ---
 
 ### Complete version
