@@ -66,7 +66,7 @@ spec:
             - "--server"
             - "--addr=localhost:8181"
             - "--diagnostic-addr=0.0.0.0:8282"
-            - "--set=services.default.url=http://bundle-server"
+            - "--set=services.default.url=http://bundle-server-frontend"
             - "--set=bundles.default.resource=bundle.tar.gz"
             - "--set=plugins.envoy_ext_authz_grpc.addr=:9191"
             - "--set=plugins.envoy_ext_authz_grpc.path=envoy/authz/allow"
